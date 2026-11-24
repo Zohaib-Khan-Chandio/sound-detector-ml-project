@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Environmental Sound Detector</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&family=Newsreader:wght@400;500&family=Montserrat:wght@500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg1:#a4d0e8;--bg2:#80b9db;--bg:#a4d0e8;--panel:#fff;--panel2:#e8f2f9;--text:#0f2a3f;--mut:#4d6a80;--line:#cfe0ec;--acc:#0891b2;--acc2:#7c3aed;--ok:#059669;--warn:#d97706;--okbg:#e6f7f0;--warnbg:#fdf3e1;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0a0d1a;--panel:#131830;--panel2:#1a2040;--text:#eaeefc;--mut:#8f9abf;--line:#262e55;--acc:#22d3ee;--acc2:#a78bfa;--ok:#34d399;--warn:#fbbf24;--okbg:#0f2d2a;--warnbg:#33290f}}
+:root[data-theme="dark"]{--bg:#0a0d1a;--panel:#131830;--panel2:#1a2040;--text:#eaeefc;--mut:#8f9abf;--line:#262e55;--acc:#22d3ee;--acc2:#a78bfa;--ok:#34d399;--warn:#fbbf24;--okbg:#0f2d2a;--warnbg:#33290f}
+*{box-sizing:border-box}html,body{margin:0}
+body{background:var(--bg);color:var(--text);font:15px/1.5 Inter,system-ui,sans-serif;background-image:radial-gradient(900px 520px at 75% 0,#ffffff55,transparent),linear-gradient(180deg,var(--bg1),var(--bg2));background-attachment:fixed}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg1:#0f3050;--bg2:#0a1d36}}
+:root[data-theme="dark"]{--bg1:#0f3050;--bg2:#0a1d36}
+.app{display:grid;grid-template-columns:290px 1fr;min-height:760px}
+aside{background:var(--panel);border-right:1px solid var(--line);padding:26px 22px;position:relative;height:auto;overflow:visible}
+h1,h2,h3{font-family:'Space Grotesk',sans-serif;margin:0}
+aside h3{font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--mut);margin:26px 0 10px}
+aside h3:first-child{margin-top:0}
+.row{display:flex;justify-content:space-between;align-items:center;font-weight:500}
+.val{font-family:'Space Grotesk';color:var(--acc);font-weight:700;font-size:20px}
+input[type=range]{width:100%;accent-color:var(--acc);margin:10px 0 2px}
+.mm{display:flex;justify-content:space-between;color:var(--mut);font-size:12px}
+.note{color:var(--mut);font-size:13px;margin-top:8px}
+.chips{display:grid;gap:8px}
+.chip{display:flex;align-items:center;gap:12px;padding:9px 12px;border-radius:14px;background:var(--panel2);border:1px solid var(--line);font-size:14px;font-weight:600;text-transform:capitalize;transition:.25s;cursor:default}
+.chip:hover{transform:translateX(4px);border-color:hsl(var(--h) 80% 60%)}
+.chip i{width:10px;height:10px;border-radius:50%;background:hsl(var(--h) 80% 55%);flex:none}
+.chip.on{background:linear-gradient(135deg,var(--acc),var(--acc2));color:#fff;border-color:transparent;transform:translateX(6px) scale(1.03);box-shadow:0 8px 22px color-mix(in srgb,var(--acc2) 45%,transparent)}
+.chip.on i{background:#fff}
+main{padding:34px clamp(18px,4vw,56px) 40px;max-width:1100px;width:100%}
+.hero{display:flex;gap:18px;align-items:center}
+.logo{width:64px;height:64px;border-radius:20px;background:linear-gradient(135deg,var(--acc),var(--acc2));display:grid;place-items:center;box-shadow:0 10px 30px color-mix(in srgb,var(--acc2) 40%,transparent);flex:none}
+.logo i{display:flex;gap:3px;align-items:center;height:30px}
+.logo b{width:4px;border-radius:3px;background:#fff;animation:eq 1s ease-in-out infinite}
+.logo b:nth-child(1){height:10px}.logo b:nth-child(2){height:26px;animation-delay:.15s}.logo b:nth-child(3){height:16px;animation-delay:.3s}.logo b:nth-child(4){height:24px;animation-delay:.45s}.logo b:nth-child(5){height:12px;animation-delay:.6s}
+@keyframes eq{50%{transform:scaleY(.4)}}
+h1{font-size:clamp(26px,4vw,40px);line-height:1.1;color:#000;text-shadow:none}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) h1{color:#fff}}
+:root[data-theme="dark"] h1{color:#fff}
+.sub{font-family:'Newsreader','Instrument Serif',Georgia,serif;font-size:clamp(15px,1.6vw,19px);line-height:1.4;color:var(--text);font-variant-numeric:lining-nums;text-wrap:balance;margin:18px auto 26px;max-width:780px;text-align:center;padding:16px 22px;background:color-mix(in srgb,var(--panel) 72%,transparent);border:1.5px solid color-mix(in srgb,var(--panel) 90%,transparent);border-radius:16px;box-shadow:0 8px 24px #1f6a8f26}
+.tabs{display:inline-flex;background:var(--panel2);border-radius:12px;padding:4px;gap:4px;margin-bottom:18px}
+.tabs button{border:0;background:none;color:var(--mut);font:600 14px Inter;padding:9px 18px;border-radius:9px;cursor:pointer}
+.tabs button.on{background:var(--panel);color:var(--text);box-shadow:0 2px 8px #0002}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:20px}
+.drop{border:2px dashed var(--line);border-radius:18px;padding:34px 20px;text-align:center;cursor:pointer;transition:.2s;background:var(--panel)}
+.drop:hover,.drop.over{border-color:var(--acc);background:color-mix(in srgb,var(--acc) 7%,var(--panel))}
+.drop svg{width:44px;height:44px;stroke:var(--acc);fill:none;stroke-width:1.7}
+.drop p{margin:8px 0 4px;font-weight:600}.drop small{color:var(--mut)}
+.btn{background:linear-gradient(135deg,var(--acc),var(--acc2));color:#fff;border:0;border-radius:11px;padding:10px 20px;font:600 14px Inter;cursor:pointer;margin-top:12px}
+.btn.rec{background:#e11d48}
+.btn.browse{background:#2ec4b6;color:#fff;border-radius:99px;padding:14px 44px;font-size:16px;letter-spacing:.01em;box-shadow:0 8px 20px #2ec4b655;transition:.2s}
+.btn.browse:hover{background:#26b0a3;transform:translateY(-2px);box-shadow:0 12px 26px #2ec4b677}
+.btn.browse:active{transform:translateY(0)}
+.fileline{display:flex;align-items:center;gap:10px;margin:16px 0 10px;font-weight:500}
+.fileline span{color:var(--mut);font-size:13px}
+audio{width:100%;margin-bottom:16px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.card h3{font-size:15px;margin-bottom:10px}
+canvas{width:100%;height:190px;display:block;border-radius:10px;background:var(--panel2)}
+.result{margin-top:16px;border-radius:18px;padding:24px 26px;display:flex;gap:24px;align-items:center;justify-content:space-between;flex-wrap:wrap;border:1px solid var(--line);animation:pop .5s}
+.result.ok{background:var(--okbg);border-color:color-mix(in srgb,var(--ok) 40%,transparent)}
+.result.low{background:var(--warnbg);border-color:color-mix(in srgb,var(--warn) 40%,transparent)}
+@keyframes pop{from{opacity:0;transform:translateY(10px)}}
+.result h2{font-size:34px}.result.ok h2{color:var(--ok)}.result.low h2{color:var(--warn)}
+.ring{--p:0;width:96px;height:96px;border-radius:50%;background:conic-gradient(var(--c) calc(var(--p)*1%),var(--line) 0);display:grid;place-items:center;transition:.6s}
+.ring div{width:76px;height:76px;border-radius:50%;background:var(--panel);display:grid;place-items:center;font:700 18px 'Space Grotesk'}
+.result.ok .ring{--c:var(--ok)}.result.low .ring{--c:var(--warn)}
+.bars{margin-top:30px}.bars h2{font-size:28px;margin-bottom:16px}
+.bar{display:grid;grid-template-columns:190px 1fr 74px;gap:16px;align-items:center;margin:22px 0;font-weight:500;font-size:18px}
+.track{height:22px;background:var(--panel2);border-radius:99px;overflow:hidden}
+.fill{height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,var(--acc),var(--acc2));transition:width .9s cubic-bezier(.2,.8,.2,1)}
+.bar b{text-align:right;font-family:'Space Grotesk'}
+.hidden{display:none}
+footer{margin-top:40px;background:color-mix(in srgb,var(--panel) 72%,transparent);color:#072b27;border:1.5px solid color-mix(in srgb,var(--panel) 90%,transparent);border-radius:16px;padding:30px clamp(20px,3vw,40px);display:grid;grid-template-columns:repeat(3,1fr);gap:28px;font-family:Montserrat,Inter,sans-serif;box-shadow:0 8px 24px #1f6a8f26}
+footer h4{margin:0 0 10px;font:800 21px/1.2 Montserrat,sans-serif;color:#072b27;min-height:2.4em}
+footer p{margin:0 0 18px;font-size:14.5px;line-height:1.5;color:#0b3d37;font-weight:500;flex:1}
+footer>div{display:flex;flex-direction:column;align-items:flex-start}
+footer .pill{display:inline-block;background:#111827;color:#fff;font:700 13px Montserrat,sans-serif;padding:10px 26px;border-radius:99px;text-decoration:none}
+footer a.pill:hover{background:#2d3748}
+@media(max-width:820px){footer{grid-template-columns:1fr}footer h4{min-height:0}}
+.demo{display:inline-block;margin-top:8px;font-size:12px;color:var(--mut);background:var(--panel2);padding:4px 10px;border-radius:8px}
+@media(max-width:820px){.app{grid-template-columns:1fr}aside{position:static;height:auto;border-right:0;border-bottom:1px solid var(--line)}.grid2{grid-template-columns:1fr}.bar{grid-template-columns:100px 1fr 50px}}
+.app{transition:grid-template-columns .3s ease}
+.app.collapsed{grid-template-columns:0 1fr}
+.app.collapsed aside{padding:0;border:0;overflow:hidden;visibility:hidden}
+.app.collapsed main{margin:0 auto}
+#tg{position:absolute;top:calc(env(safe-area-inset-top,0px) + 18px);left:272px;z-index:30;width:36px;height:36px;border-radius:50%;border:1px solid var(--line);background:var(--panel);color:var(--text);cursor:pointer;display:grid;place-items:center;box-shadow:0 4px 14px #0b4a6e33;transition:left .3s ease,background .2s}
+#tg:hover{background:var(--panel2)}
+#tg svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round;transition:transform .3s}
+.app.collapsed #tg{left:14px}
+.app.collapsed #tg svg{transform:rotate(180deg)}
+@media(max-width:820px){#tg,.app.collapsed #tg{left:auto;right:14px}.app.collapsed{grid-template-columns:1fr}.app.collapsed aside{display:none}}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) footer h4,:root:not([data-theme="light"]) footer p{color:var(--text)}}
+:root[data-theme="dark"] footer h4,:root[data-theme="dark"] footer p{color:var(--text)}
+#bars{padding:30px 36px;border-radius:22px}
+#bars .bar:nth-child(1) .fill{background:linear-gradient(90deg,#14b8a6,#34d399)}
+#bars .bar:nth-child(2) .fill{background:linear-gradient(90deg,#f97316,#fbbf24)}
+#bars .bar:nth-child(3) .fill{background:linear-gradient(90deg,#ec4899,#f472b6)}
+#bars .bar:nth-child(1) b{color:#0f766e}
+#bars .bar:nth-child(2) b{color:#c2410c}
+#bars .bar:nth-child(3) b{color:#be185d}
+.bars .note{font-size:14.5px}
+@media(max-width:820px){.bar{grid-template-columns:110px 1fr 58px;font-size:15px;gap:10px}#bars{padding:22px 20px}}
+</style>
+</head>
+<body>
+<div class="app">
+<button id="tg" type="button" aria-label="Hide sidebar" title="Hide / show sidebar"><svg viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg></button>
+<aside>
+  <h3>Settings</h3>
+  <div class="row">Confidence threshold <span class="val" id="tv">0.55</span></div>
+  <input type="range" id="th" min="0.30" max="0.90" step="0.01" value="0.55">
+  <div class="mm"><span>0.30</span><span>0.90</span></div>
+  <div class="note" id="thnote">Project default: 55%.</div>
+  <h3>Model</h3>
+  <div class="note" id="mdl" style="margin:0;color:var(--text)">Tuned SVM (RBF) with a built-in scaler, trained on UrbanSound8K folds 1 to 9.</div>
+  <div class="note" id="srv" style="color:var(--warn)">Connecting to the model...</div>
+  <h3>Sounds it knows</h3>
+  <div class="chips" id="chips"></div>
+</aside>
+<main>
+  <div class="hero">
+    <div class="logo"><i><b></b><b></b><b></b><b></b><b></b></i></div>
+    <h1>Environmental Sound Detector</h1>
+  </div>
+  <p class="sub">Add a short sound clip and the app tells you which of 10 city sounds it hears, and how sure it is. If it is not sure, it says so.</p>
+
+  <div class="tabs"><button class="on" data-t="up">Upload a file</button><button data-t="mic">Record from microphone</button></div>
+
+  <section id="up">
+    <div class="drop" id="drop">
+      <svg viewBox="0 0 24 24"><path d="M7 18a4 4 0 0 1-.5-7.97A6 6 0 0 1 18 9a4.5 4.5 0 0 1 0 9"/><path d="M12 11v8M9 14l3-3 3 3"/></svg>
+      <p>Drag and drop file here</p><small>Limit 200MB per file • WAV, MP3, FLAC, OGG</small><br>
+      <button class="btn browse" type="button">Browse files</button>
+      <input type="file" id="file" accept="audio/*" hidden>
+    </div>
+  </section>
+  <section id="mic" class="hidden">
+    <div class="drop" style="cursor:default">
+      <p>Record a short clip</p><small>Your browser will ask for microphone permission.</small><br>
+      <button class="btn" id="recBtn" type="button">● Start recording</button>
+    </div>
+  </section>
+
+  <div id="out" class="hidden">
+    <div class="fileline">🎵 <span id="fn"></span></div>
+    <audio id="au" controls></audio>
+    <div class="grid2">
+      <div class="card"><h3>Waveform</h3><canvas id="wf"></canvas></div>
+      <div class="card"><h3>Mel-spectrogram</h3><canvas id="sp"></canvas></div>
+    </div>
+    <div class="result" id="res">
+      <div><h2 id="rl"></h2><div id="rc" style="margin-top:6px"></div></div>
+      <div class="ring" id="ring"><div id="rp"></div></div>
+    </div>
+    <div class="bars"><h2>Top 3 predictions</h2><div class="card" id="bars"></div>
+      <p class="note">Confidence is the probability the model gives to its top choice. A low value means the sound looks like several classes, or like none of them. Only the first 4 seconds of a clip are analysed, the same as in training.</p>
+      
+    </div>
+  </div>
+
+  <footer>
+<div><h4>Zohaib Khan</h4><p>Guides the team and the project from the first idea to the final demo.</p><span class="pill">Group leader</span></div>
+<div><h4>Qamar Abbas<br>Muntazir Mehdi</h4><p>Team members who helped build and test the Environmental Sound Detector.</p><span class="pill">Members</span></div>
+<div><h4>UrbanSound8K dataset</h4><p>CC BY 4.0. J. Salamon, C. Jacoby and J. P. Bello, 2014.</p><a class="pill" href="https://urbansounddataset.weebly.com/urbansound8k.html" target="_blank" rel="noopener">View dataset</a></div>
+</footer>
+</main>
+</div>
+<script>
+const $=id=>document.getElementById(id);
+const CL=["air conditioner","car horn","children playing","dog bark","drilling","engine idling","gun shot","jackhammer","siren","street music"];
+$("chips").innerHTML=CL.map((c,i)=>`<span class="chip" style="--h:${i*36}"><i></i>${c}</span>`).join("");
+const th=$("th");th.oninput=()=>{$("tv").textContent=(+th.value).toFixed(2);if(last)show(last)};
+document.querySelectorAll(".tabs button").forEach(b=>b.onclick=()=>{document.querySelectorAll(".tabs button").forEach(x=>x.classList.toggle("on",x===b));$("up").classList.toggle("hidden",b.dataset.t!="up");$("mic").classList.toggle("hidden",b.dataset.t!="mic")});
+const drop=$("drop"),fi=$("file");
+drop.onclick=()=>fi.click();
+fi.onchange=()=>fi.files[0]&&load(fi.files[0]);
+["dragover","dragenter"].forEach(e=>drop.addEventListener(e,ev=>{ev.preventDefault();drop.classList.add("over")}));
+["dragleave","drop"].forEach(e=>drop.addEventListener(e,ev=>{ev.preventDefault();drop.classList.remove("over")}));
+drop.addEventListener("drop",ev=>ev.dataTransfer.files[0]&&load(ev.dataTransfer.files[0]));
+let mr,chunks=[];
+$("recBtn").onclick=async()=>{
+  if(mr&&mr.state=="recording"){mr.stop();return}
+  try{const s=await navigator.mediaDevices.getUserMedia({audio:true});mr=new MediaRecorder(s);chunks=[];
+    mr.ondataavailable=e=>chunks.push(e.data);
+    mr.onstop=()=>{s.getTracks().forEach(t=>t.stop());$("recBtn").textContent="● Start recording";$("recBtn").classList.remove("rec");load(new File(chunks,"recording.webm",{type:"audio/webm"}))};
+    mr.start();$("recBtn").textContent="■ Stop recording";$("recBtn").classList.add("rec");
+  }catch(e){alert("Microphone not available here.")}
+};
+let last=null;
+async function load(f){
+  $("out").classList.remove("hidden");
+  $("fn").textContent=f.name+" · "+(f.size/1048576).toFixed(1)+"MB";
+  $("au").src=URL.createObjectURL(f);
+  let buf;
+  try{
+    const ac=new (window.AudioContext||window.webkitAudioContext)();
+    buf=await ac.decodeAudioData(await f.arrayBuffer());
+    const d=buf.getChannelData(0);
+    drawSpec(d);drawWave(d);
+  }catch(e){alert("Could not read this audio file.");return}
+  busy();
+  try{
+    const pcm=await toPCM22k(buf);
+    const r=await callApi(pcm);
+    last=r.top3.map(t=>[t.label.replace(/_/g," "),t.prob*100]);
+    show(last);
+  }catch(e){fail(e)}
+}
+// mono, 22050 Hz, first 4 seconds: exactly what the model was trained on
+async function toPCM22k(buf){
+  const sr=22050,n=Math.max(1,Math.round(Math.min(buf.duration,4)*sr));
+  const oc=new OfflineAudioContext(1,n,sr),src=oc.createBufferSource();
+  src.buffer=buf;src.connect(oc.destination);src.start(0);
+  return (await oc.startRendering()).getChannelData(0);
+}
+// ---------- Streamlit component bridge ----------
+const ST={
+  send(type,data){window.parent.postMessage(Object.assign({isStreamlitMessage:true,type},data),"*")},
+  ready(){this.send("streamlit:componentReady",{apiVersion:1})},
+  setValue(v){this.send("streamlit:setComponentValue",{value:v,dataType:"json"})},
+  setHeight(h){this.send("streamlit:setFrameHeight",{height:h})}
+};
+let pending=null,seq=0,infoSeen=null;
+function b64(f32){
+  const u8=new Uint8Array(f32.buffer,f32.byteOffset,f32.byteLength);let s="";
+  for(let i=0;i<u8.length;i+=0x8000)s+=String.fromCharCode.apply(null,u8.subarray(i,i+0x8000));
+  return btoa(s);
+}
+function callApi(pcm){
+  return new Promise((resolve,reject)=>{
+    const id=Date.now()+"-"+(++seq);
+    const timer=setTimeout(()=>{pending=null;reject(new Error("The model took too long to answer. Please try again."))},120000);
+    pending={id,resolve,reject,timer};
+    ST.setValue({id,pcm_b64:b64(pcm)});
+  });
+}
+function applyInfo(j){
+  const key=JSON.stringify(j);if(key===infoSeen)return;infoSeen=key;
+  const t=Math.min(0.9,Math.max(0.3,j.threshold));
+  th.value=t;$("tv").textContent=t.toFixed(2);
+  $("thnote").textContent="Project default: "+Math.round(j.threshold*100)+"%.";
+  $("mdl").textContent=j.model+" with a built-in scaler, trained on UrbanSound8K folds 1 to 9.";
+  $("srv").textContent="Model connected.";$("srv").style.color="var(--ok)";
+}
+window.addEventListener("message",ev=>{
+  const m=ev.data;if(!m||m.type!=="streamlit:render")return;
+  const a=m.args||{};
+  if(a.info)applyInfo(a.info);
+  const p=a.prediction;
+  if(p&&pending&&p.id===pending.id){
+    const r=pending;pending=null;clearTimeout(r.timer);
+    p.error?r.reject(new Error(p.error)):r.resolve(p);
+  }
+});
+function busy(){
+  $("res").className="result low";$("rl").textContent="Analysing...";$("rc").textContent="The model is listening";
+  $("ring").style.setProperty("--p",0);$("rp").textContent="...";$("bars").innerHTML="";
+  document.querySelectorAll(".chip").forEach(el=>el.classList.remove("on"));
+}
+function fail(e){
+  $("res").className="result low";$("rl").textContent="No answer";
+  $("rc").textContent=e.message;
+  $("rp").textContent="–";$("bars").innerHTML="";last=null;
+}
+function fit(c){const r=c.getBoundingClientRect(),k=devicePixelRatio||1;c.width=r.width*k;c.height=r.height*k;return c.getContext("2d")}
+function drawWave(d){
+  const c=$("wf"),x=fit(c),W=c.width,H=c.height;x.clearRect(0,0,W,H);
+  const g=x.createLinearGradient(0,0,W,0);g.addColorStop(0,"#22d3ee");g.addColorStop(1,"#a78bfa");x.fillStyle=g;
+  const step=Math.floor(d.length/W)||1;
+  for(let i=0;i<W;i++){let mn=1,mx=-1;for(let j=0;j<step;j++){const v=d[i*step+j]||0;if(v<mn)mn=v;if(v>mx)mx=v}
+    x.fillRect(i,(1-mx)*H/2,1,Math.max(1,(mx-mn)*H/2))}
+}
+function fft(re,im){const n=re.length;for(let i=1,j=0;i<n;i++){let b=n>>1;for(;j&b;b>>=1)j^=b;j^=b;if(i<j){[re[i],re[j]]=[re[j],re[i]];[im[i],im[j]]=[im[j],im[i]]}}
+  for(let l=2;l<=n;l<<=1){const a=-2*Math.PI/l;for(let i=0;i<n;i+=l)for(let k=0;k<l/2;k++){const wr=Math.cos(a*k),wi=Math.sin(a*k),u=i+k,v=u+l/2,tr=re[v]*wr-im[v]*wi,ti=re[v]*wi+im[v]*wr;re[v]=re[u]-tr;im[v]=im[u]-ti;re[u]+=tr;im[u]+=ti}}}
+function mag(t){t/=1;const s=[[0,"#000004"],[.25,"#3b0f70"],[.5,"#b73779"],[.75,"#fc8961"],[1,"#fcfdbf"]];let i=0;while(i<3&&t>s[i+1][0])i++;return s[i+1][1]==null?s[0][1]:mix(s[i],s[i+1],t)}
+function mix(a,b,t){t=(t-a[0])/(b[0]-a[0]);const p=h=>[1,3,5].map(i=>parseInt(h.substr(i,2),16)),A=p(a[1]),B=p(b[1]);return`rgb(${A.map((v,i)=>Math.round(v+(B[i]-v)*t)).join(",")})`}
+function drawSpec(d){
+  const N=512,F=120,B=64,c=$("sp"),x=fit(c),W=c.width,H=c.height,hop=Math.max(1,Math.floor((d.length-N)/F));
+  let cent=0,tot=0;const cw=W/F,bh=H/B;
+  for(let f=0;f<F;f++){const re=new Float32Array(N),im=new Float32Array(N);
+    for(let i=0;i<N;i++)re[i]=(d[f*hop+i]||0)*(0.5-0.5*Math.cos(2*Math.PI*i/N));
+    fft(re,im);
+    for(let b=0;b<B;b++){const lo=Math.floor(Math.pow(N/2,b/B)),hi=Math.max(lo+1,Math.floor(Math.pow(N/2,(b+1)/B)));
+      let e=0;for(let k=lo;k<hi;k++)e+=re[k]*re[k]+im[k]*im[k];e/=hi-lo;
+      const db=10*Math.log10(e+1e-10);const t=Math.min(1,Math.max(0,(db+70)/70));
+      cent+=b*e;tot+=e;x.fillStyle=mag(t);x.fillRect(f*cw,H-(b+1)*bh,cw+1,bh+1)}}
+  return tot?cent/tot/B:.2;
+}
+function show(p){
+  const [n,c]=p[0],ok=c/100>=+th.value;
+  $("res").className="result "+(ok?"ok":"low");
+  $("rl").textContent=ok?cap(n):"Not sure";
+  $("rc").innerHTML=ok?`Confidence: <b>${c.toFixed(1)}%</b>`:`Best guess: ${n} (${c.toFixed(1)}%), below your ${(th.value*100).toFixed(0)}% threshold`;
+  $("ring").style.setProperty("--p",c);$("rp").textContent=c.toFixed(0)+"%";
+  document.querySelectorAll(".chip").forEach((el,i)=>el.classList.toggle("on",ok&&CL[i]==n));
+  $("bars").innerHTML=p.map(([a,b])=>`<div class="bar"><span>${a}</span><div class="track"><div class="fill" data-w="${b}"></div></div><b>${b.toFixed(1)}%</b></div>`).join("");
+  requestAnimationFrame(()=>requestAnimationFrame(()=>document.querySelectorAll(".fill").forEach(f=>f.style.width=f.dataset.w+"%")));
+}
+$("tg").onclick=()=>{const c=document.querySelector(".app").classList.toggle("collapsed");$("tg").setAttribute("aria-label",c?"Show sidebar":"Hide sidebar")};
+const cap=s=>s[0].toUpperCase()+s.slice(1);
+ST.ready();
+const appEl=document.querySelector(".app");
+const sendH=()=>ST.setHeight(Math.ceil(appEl.getBoundingClientRect().height)+2);
+new ResizeObserver(sendH).observe(appEl);
+window.addEventListener("load",sendH);
+</script>
+</body>
+</html>

@@ -1,0 +1,13 @@
+{
+  "features_version": "v2",
+  "sr": 22050,
+  "duration": 4.0,
+  "threshold": 0.55,
+  "n_features": 316,
+  "final_model": "svm",
+  "scaler_inside_model": true,
+  "sklearn_version": "1.6.1",
+  "model_name": "Tuned SVM (RBF)",
+  "fold10_accuracy": 0.7992831541218638,
+  "fold10_macro_f1": 0.812460461143638
+}

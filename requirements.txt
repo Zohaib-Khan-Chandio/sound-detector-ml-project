@@ -1,0 +1,8 @@
+streamlit>=1.39
+librosa>=0.10
+soundfile>=0.12
+numpy
+scipy
+joblib
+# IMPORTANT: must be the SAME scikit-learn version that trained the model (your Part 3 printed 1.6.1)
+scikit-learn==1.6.1
